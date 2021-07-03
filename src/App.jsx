@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import { Typography, Divider, Layout } from 'antd';
+import { Spin, Space } from 'antd';
 import Header from './components/Header';
 import _Table from './components/Table';
-import { dataset } from './data.js';
+//import { dataset } from './data.js';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -11,14 +12,16 @@ function App() {
   const { Title, Paragraph, Link } = Typography;
   const { Footer, Content } = Layout;
 
-  let [dataSet, setDataset] = useState(dataset);
+  let [dataSet, setDataset] = useState(null);
   let [tableLoading, setTableloading] = useState(true);
 
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/photos')
       .then((res) => res.json())
-      .then((data) => setDataset(data))
-      .then(setTableloading(false));
+      .then((data) => {
+        setDataset(data);
+        setTableloading(false);
+      });
   }, []);
 
   return (
@@ -34,7 +37,13 @@ function App() {
               nemo alias ex temporibus mollitia quis debitis expedita non eos,
               molestiae reprehenderit! Corrupti.
             </Paragraph>
-            {tableLoading ? 'Loading data...' : <_Table dataSet={dataSet} />}
+            {tableLoading ? (
+              <Space size='large'>
+                <Spin />
+              </Space>
+            ) : (
+              <_Table dataSet={dataSet} />
+            )}
 
             <Divider />
             <p>
